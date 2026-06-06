@@ -1,9 +1,12 @@
-from flask import Flask, render_template, request, send_from_directory
 import os
-import gunicorn
+from flask import Flask, render_template, request, send_from_directory
 
 app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = '/home/azori/Downloads'
+
+# Use a relative path inside your project
+UPLOAD_FOLDER = os.path.join(os.getcwd(), 'uploads')
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)  # Create if missing
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 @app.route('/')
 def index():
@@ -33,4 +36,4 @@ def download_file():
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename, as_attachment=True)
 
 if __name__ == '__main__':
-    app.run(host='192.168.43.94', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)
